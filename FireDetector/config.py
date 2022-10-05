@@ -1,0 +1,8 @@
+WIFI_SSID = 'caliope'
+WIFI_PASS = 'sinlugar'
+
+MQTT_TAGO_HOST = 'mqtt.tago.io'
+MQTT_TAGO_PORT = 1883
+MQTT_TAGO_USER = 'Default'
+# MQTT_TAGO_PASS = 'f73f31ba-c984-4b35-9ead-791b72b128b2'
+MQTT_TAGO_PASS = '536ce64e-3e51-4a80-9115-26aefbb25a20'
