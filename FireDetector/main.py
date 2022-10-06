@@ -40,13 +40,13 @@ def send_data():
                 "variable": "location{}".format(device_id),
                 "value": air_quality,
                 "location": {
-                    "lat": -34.88677,
-                    "lng": -56.1588
-                }
+                    "lat": -34.891900,
+                    "lng": -56.178802
+                },
             },
         ]
-        client.publish(topic="data/{}".format(device_id), msg=ujson.dumps(data))
-        time.sleep(5)
+        client.publish(topic="data/{}".format(device_id), msg=ujson.dumps(data), qos=1)
+        time.sleep(60)
 
 
 pycom.heartbeat(False)

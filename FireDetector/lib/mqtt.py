@@ -1,13 +1,14 @@
 import usocket as socket
 import ustruct as struct
 from ubinascii import hexlify
+import utime
 
 
 class MQTTException(Exception):
     pass
 
 
-class MQTTClient:
+class SimpleMQTTClient:
     def __init__(
         self,
         client_id,
@@ -214,3 +215,56 @@ class MQTTClient:
     def check_msg(self):
         self.sock.setblocking(False)
         return self.wait_msg()
+
+
+class MQTTClient(SimpleMQTTClient):
+
+    DELAY = 2
+    DEBUG = True
+
+    def delay(self, i):
+        utime.sleep(self.DELAY)
+
+    def log(self, in_reconnect, e):
+        if self.DEBUG:
+            if in_reconnect:
+                print("mqtt reconnect: %r" % e)
+            else:
+                print("mqtt: %r" % e)
+
+    def reconnect(self):
+        i = 0
+        while 1:
+            try:
+                return super().connect(False)
+            except OSError as e:
+                self.log(True, e)
+                i += 1
+                self.delay(i)
+
+    def publish(self, topic, msg, retain=False, qos=0):
+        while 1:
+            try:
+                ret = super().publish(topic, msg, retain, qos)
+                return ret
+            except OSError as e:
+                self.log(False, e)
+            self.reconnect()
+
+    def wait_msg(self):
+        while 1:
+            try:
+                return super().wait_msg()
+            except OSError as e:
+                self.log(False, e)
+            self.reconnect()
+
+    def check_msg(self, attempts=2):
+        while attempts:
+            self.sock.setblocking(False)
+            try:
+                return super().wait_msg()
+            except OSError as e:
+                self.log(False, e)
+            self.reconnect()
+            attempts -= 1
