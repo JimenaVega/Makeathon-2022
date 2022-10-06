@@ -15,4 +15,5 @@ def wifi_connect():
             while not wlan.isconnected():
                 machine.idle()
             print('WLAN connection succeeded!')
+            break
     return ubinascii.hexlify(machine.unique_id()).decode()
